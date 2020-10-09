@@ -1,0 +1,17 @@
+{
+    "name": "cp-texteditor-tinymce",
+    "display_name": "[ContentPress] Text Editor TinyMCE",
+    "description": "Enhances the default text editor to create awesome posts.",
+    "version": "0.1",
+    "authors": [
+        {
+            "name": "wp-kitten",
+            "url": "https://wp-kitten.github.io"
+        }
+    ],
+    "contributors": [],
+    "page_url": "https://github.com/wp-kitten/cp-texteditor-tinymce",
+    "update_url": "",
+    "autoload": "index.php",
+    "thumbnail": "thumb.png"
+}
