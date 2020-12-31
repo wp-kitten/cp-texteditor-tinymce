@@ -5,18 +5,18 @@ use App\Http\Controllers\Admin\AjaxController;
 use App\Models\Post;
 use App\Models\PostMeta;
 
-add_action( 'contentpress/plugin/activated', function ( $pluginDirName, $pluginInfo ) {
+add_action( 'valpress/plugin/activated', function ( $pluginDirName, $pluginInfo ) {
 //    logger( 'Plugin '.$pluginInfo->name.' activated!' );
 }, 10, 2 );
 
-add_action( 'contentpress/plugin/deactivated', function ( $pluginDirName, $pluginInfo ) {
+add_action( 'valpress/plugin/deactivated', function ( $pluginDirName, $pluginInfo ) {
 //    logger( 'Plugin '.$pluginInfo->name.' deactivated!' );
 }, 10, 2 );
 
 //#! Remove actions registered by the App
-remove_action( 'contentpress/enqueue_text_editor', 'cp_enqueue_text_editor_scripts' );
-remove_action( 'contentpress/post_editor_content/before', 'contentPressTextEditorBefore' );
-remove_action( 'contentpress/post_editor_content/after', 'contentPressTextEditorAfter' );
+remove_action( 'valpress/enqueue_text_editor', 'vp_enqueue_text_editor_scripts' );
+remove_action( 'valpress/post_editor_content/before', 'valPressTextEditorBefore' );
+remove_action( 'valpress/post_editor_content/after', 'valPressTextEditorAfter' );
 
 //#! Add Text editor actions
 /*
@@ -25,7 +25,7 @@ remove_action( 'contentpress/post_editor_content/after', 'contentPressTextEditor
  * @param $mainPostID
  * @param $languageID
  */
-add_action( 'contentpress/enqueue_text_editor', 'tinymce_plugin_enqueueTextEditor', 40, 4 );
+add_action( 'valpress/enqueue_text_editor', 'tinymce_plugin_enqueueTextEditor', 40, 4 );
 function tinymce_plugin_enqueueTextEditor( $postID = 0, $screen = '', $mainPostID = 0, $languageID = 0 )
 {
     if ( empty( $postID ) ) {
@@ -42,9 +42,9 @@ function tinymce_plugin_enqueueTextEditor( $postID = 0, $screen = '', $mainPostI
         'language_id' => ( empty( $languageID ) ? $post->post_type->language_id : $languageID ),
         'post_type_id' => $post->post_type->id,
 
-        'editor_styles' => apply_filters( 'contentpress/texteditor/editor-styles', [
+        'editor_styles' => apply_filters( 'valpress/texteditor/editor-styles', [
             'https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap',
-            cp_plugin_url( CPTE_PLUGIN_DIR_NAME, 'assets/css/text-editor-styles.css' ),
+            vp_plugin_url( CPTE_PLUGIN_DIR_NAME, 'assets/css/text-editor-styles.css' ),
         ] ),
 
         //#! Screen: translate
@@ -52,7 +52,7 @@ function tinymce_plugin_enqueueTextEditor( $postID = 0, $screen = '', $mainPostI
         'current_post_id' => $postID,
     ] );
 
-    ScriptsManager::enqueueHeadScript( 'tinymce-js', cp_plugin_url( CPTE_PLUGIN_DIR_NAME, 'assets/tinymce/tinymce.min.js' ) );
+    ScriptsManager::enqueueHeadScript( 'tinymce-js', vp_plugin_url( CPTE_PLUGIN_DIR_NAME, 'assets/tinymce/tinymce.min.js' ) );
 
     //#! Load the scripts to customize the text editor
     if ( 'post-new' == $screen ) {
@@ -64,10 +64,10 @@ function tinymce_plugin_enqueueTextEditor( $postID = 0, $screen = '', $mainPostI
     elseif ( 'post-translate' == $screen ) {
         ScriptsManager::enqueueFooterScript( 'posts-translate.js', asset( '_admin/js/posts/translate.js' ) );
     }
-    ScriptsManager::enqueueFooterScript( 'tinymce-init.js', cp_plugin_url( CPTE_PLUGIN_DIR_NAME, 'assets/js/editor.js' ) );
+    ScriptsManager::enqueueFooterScript( 'tinymce-init.js', vp_plugin_url( CPTE_PLUGIN_DIR_NAME, 'assets/js/editor.js' ) );
 }
 
-add_filter( 'contentpress/the_post_editor_content', 'tinymce_plugin_textEditorContent', 20, 1 );
+add_filter( 'valpress/the_post_editor_content', 'tinymce_plugin_textEditorContent', 20, 1 );
 function tinymce_plugin_textEditorContent( $postContent = '' )
 {
     return trim( $postContent );
@@ -75,15 +75,15 @@ function tinymce_plugin_textEditorContent( $postContent = '' )
 
 /**
  * Injects the markup before the post content
- * @hooked contentPressTextEditorBefore()
+ * @hooked valPressTextEditorBefore()
  */
-add_action( 'contentpress/post_editor_content/before', 'tinymce_plugin_textEditorBefore' );
+add_action( 'valpress/post_editor_content/before', 'tinymce_plugin_textEditorBefore' );
 
 /**
  * Injects the markup after the post content
- * @hooked contentPressTextEditorAfter()
+ * @hooked valPressTextEditorAfter()
  */
-add_action( 'contentpress/post_editor_content/after', 'tinymce_plugin_textEditorAfter' );
+add_action( 'valpress/post_editor_content/after', 'tinymce_plugin_textEditorAfter' );
 
 /**
  * Injects the markup before the post content
@@ -108,7 +108,7 @@ function tinymce_plugin_textEditorAfter()
  */
 function cb_ajax_tinymce_save_editor_image( AjaxController $ajaxControllerClass )
 {
-    if ( !cp_current_user_can( 'upload_files' ) ) {
+    if ( !vp_current_user_can( 'upload_files' ) ) {
         return $ajaxControllerClass->responseError( __( 'cpte::m.You are not allowed to perform this action.' ) );
     }
 

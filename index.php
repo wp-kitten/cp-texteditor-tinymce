@@ -14,7 +14,7 @@ define( 'CPTE_PLUGIN_DIR_NAME', basename( dirname( __FILE__ ) ) );
 define( 'CPTE_PLUGIN_DIR_PATH', trailingslashit( wp_normalize_path( dirname( __FILE__ ) ) ) );
 
 
-if ( cp_is_admin() ) {
+if ( vp_is_admin() ) {
     require_once( dirname( __FILE__ ) . '/admin-hooks.php' );
 }
 else {
@@ -24,8 +24,8 @@ else {
 /**
  * Register the path to the translation file that will be used depending on the current locale
  */
-add_action( 'contentpress/app/loaded', function () {
-    cp_register_language_file( 'cpte', path_combine(
+add_action( 'valpress/app/loaded', function () {
+    vp_register_language_file( 'cpte', path_combine(
         PluginsManager::getInstance()->getPluginDirPath( CPTE_PLUGIN_DIR_NAME ),
         'lang'
     ) );
